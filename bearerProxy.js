@@ -4,6 +4,7 @@ const express = require('express');
 const axios = require('axios');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const https = require('https');
 
 // Parse command-line arguments
 const argv = yargs(hideBin(process.argv))
@@ -36,6 +37,13 @@ const BEARER_TOKEN = argv.token;
 const TARGET_URL_PREFIX = argv.target;
 
 /**
+ * Create an https agent that ignores SSL/TLS certificate verification
+ */ 
+const httpsAgent = new https.Agent({
+    rejectUnauthorized: false // Disable SSL/TLS certificate verification
+});
+
+/**
  * Middleware to parse JSON requests.
  */
 app.use(express.json());
@@ -52,14 +60,18 @@ app.use(express.json());
 app.use('/proxy/*', async (req, res) => {
     try {
         const targetUrl = `${TARGET_URL_PREFIX}${req.originalUrl.replace('/proxy', '')}`;
+        const parsedUrl = new URL(targetUrl);
+
         const response = await axios({
             method: req.method,
             url: targetUrl,
             headers: {
                 ...req.headers,
+                'Host': parsedUrl.host,  // Update the Host header
                 'Authorization': `Bearer ${BEARER_TOKEN}`
             },
             data: req.body,
+            httpsAgent,
         });
 
         res.status(response.status).json(response.data);
