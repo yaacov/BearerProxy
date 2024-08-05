@@ -33,12 +33,15 @@ bearer-proxy --token mysecrettoken --target http://example.com --port 8080
 This command will start the proxy server on port `8080` and forward all requests to `http://example.com` with the `Authorization: Bearer mysecrettoken` header.
 
 ```bash
+# Get Openshift token and target inventory route
 TOKEN=$(oc whoami -t)
 TARGET=https://forklift-inventory-openshift-mtv.apps-crc.testing
 
+# Run proxy
 bearer-proxy --token "$TOKEN" --target "$TARGET" --port 8080
 
-INVENTORY_SERVER_HOST=http://127.0.0.1:8080
+# On new terminal run the Openshit web console
+INVENTORY_SERVER_HOST=127.0.0.1:8080 bash ./ci/start-console.sh
 ```
 
 This example will add an Openshit bearer token to the forklift inventory service.
