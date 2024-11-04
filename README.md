@@ -41,7 +41,7 @@ TARGET=https://forklift-inventory-openshift-mtv.apps-crc.testing
 bearer-proxy --token "$TOKEN" --target "$TARGET" --port 8080
 
 # On new terminal run the Openshit web console
-INVENTORY_SERVER_HOST=127.0.0.1:8080 bash ./ci/start-console.sh
+INVENTORY_SERVER_HOST=http://127.0.0.1:8080 bash ./ci/start-console.sh
 ```
 
 This example will add an Openshit bearer token to the forklift inventory service.
