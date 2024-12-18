@@ -35,7 +35,7 @@ This command will start the proxy server on port `8080` and forward all requests
 ```bash
 # Get Openshift token and target inventory route
 TOKEN=$(oc whoami -t)
-TARGET=https://forklift-inventory-openshift-mtv.apps-crc.testing
+TARGET=$(oc get routes -A | grep forklift-inventory | awk '{print "https://"$3}')
 
 # Run proxy
 bearer-proxy --token "$TOKEN" --target "$TARGET" --port 8080
